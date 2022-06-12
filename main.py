@@ -1,9 +1,12 @@
 from typing import Optional
+from unittest import result
 from fastapi import FastAPI
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import shutil
 from fastapi.responses import FileResponse
+import pickle
+import os
 
 # import numpy as np
 # import matplotlib.pyplot as plt
@@ -62,9 +65,13 @@ async def upload(file: UploadFile = File(...)):
         with open(file.filename, "wb") as buffer:
           shutil.copyfileobj(file.file, buffer)
           path=file.filename
-          %store path
-          %run ./500_Testing.ipynb
-          %store - r result_list
+          file1 = open("Original.txt", "wb") 
+          pickle.dump(path, file1)
+          file1.close
+        #   exec(open("./500_Testing.py").read()) 
+          os.system('500_Testing.py')
+          with open('Original1.txt', 'rb') as f:
+           result_list = pickle.load(f)
         return {'result':result_list}
 
 @app.get("/result")
